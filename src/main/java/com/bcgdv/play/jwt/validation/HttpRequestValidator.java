@@ -16,7 +16,7 @@ public interface HttpRequestValidator {
      * Validate a request by inspecting it's headers
      *
      * @param requestHeader The current http request header
-     * @return Optional<String> with validation errors. Returns empty if request has no validation
+     * @return Optional String with validation errors. Returns empty if request has no validation
      * errors, "no news is good news"
      */
     Optional<String> validate(Http.RequestHeader requestHeader);

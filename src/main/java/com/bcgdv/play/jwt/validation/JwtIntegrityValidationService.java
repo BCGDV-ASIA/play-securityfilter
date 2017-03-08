@@ -21,8 +21,8 @@ public class JwtIntegrityValidationService {
     /**
      * Checks for integrity of JWT Token
      *
-     * @param requestHeader
-     * @throws JwtValidationException
+     * @param requestHeader the request headers
+     * @throws JwtValidationException if token is not well formed
      */
     public void requestHasWellFormedToken(Http.RequestHeader requestHeader) throws JwtValidationException {
         hasAuthHeader(requestHeader)
@@ -33,9 +33,9 @@ public class JwtIntegrityValidationService {
     /**
      * Does the http  request have an Authorization header?
      *
-     * @param requestHeader
+     * @param requestHeader the http request headers
      * @return service for builder pattern
-     * @throws JwtValidationException
+     * @throws JwtValidationException if auth header cannot be accessed.
      */
     protected JwtIntegrityValidationService hasAuthHeader(Http.RequestHeader requestHeader) throws JwtValidationException {
         logger.debug("Validating Authorization Header for given request {}", requestHeader.uri());
@@ -46,11 +46,12 @@ public class JwtIntegrityValidationService {
     }
 
     /**
-     * Does the http request have a valid JWT token?
+     * Does the http request have a valid JWT token? Split it into three pieces to find out. Note
+     * this could be implemented much nicer.
      *
-     * @param requestHeader
+     * @param requestHeader the http request header
      * @return service for builder pattern
-     * @throws JwtValidationException
+     * @throws JwtValidationException if token cannot be tested
      */
     protected JwtIntegrityValidationService andHasJWTToken(Http.RequestHeader requestHeader) throws JwtValidationException {
         logger.debug("Validating jwt length for given request {}", requestHeader.uri());
@@ -62,10 +63,10 @@ public class JwtIntegrityValidationService {
     }
 
     /**
-     * Does the http request JWT token have an unexpired token?
+     * Does the http request JWT token have a valid token that has not expired?
      *
-     * @param requestHeader
-     * @throws JwtValidationException
+     * @param requestHeader the http request header
+     * @throws JwtValidationException if the token is expired
      */
     protected void thatIsNotExpired(Http.RequestHeader requestHeader) throws JwtValidationException {
         String payload = JwtUtil.extractJwtPayload(JwtUtil.
@@ -82,20 +83,20 @@ public class JwtIntegrityValidationService {
     /**
      * Calculate if the token is expired?
      *
-     * @param createdTime
-     * @param expiryTimeInMilliSeconds
+     * @param dateCreated when the token was created
+     * @param expiryTimeInMilliSeconds expiry in milliseconds
      * @return true | false
      */
-    public static boolean isExpired(Long createdTime, Long expiryTimeInMilliSeconds) {
+    public static boolean isExpired(Long dateCreated, Long expiryTimeInMilliSeconds) {
         if (expiryTimeInMilliSeconds == Token.EXPIRY_NEVER ||
                 hasNegative(expiryTimeInMilliSeconds)) {
             return false;
         } else {
             Long now = new DateTime().getMillis();
-            if (createdTime > now) {
+            if (dateCreated > now) {
                 return false;
             }
-            Long duration = now - createdTime;
+            Long duration = now - dateCreated;
             return (duration > expiryTimeInMilliSeconds);
         }
     }
@@ -103,7 +104,7 @@ public class JwtIntegrityValidationService {
     /**
      * Is the Token meant to never expire?
      *
-     * @param expiryTimeInMilliSeconds
+     * @param expiryTimeInMilliSeconds expiry in milliseconds
      * @return true | false
      */
     protected static boolean hasNegative(Long expiryTimeInMilliSeconds) {

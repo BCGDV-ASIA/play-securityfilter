@@ -52,19 +52,19 @@ public class JwtPayloadValidationService {
     /**
      * Validate tokens match the current method's annotations
      *
-     * @param tokentype
-     * @param requestHeader
-     * @param filterAnnotationInfo
-     * @throws JwtValidationException
+     * @param tokentype the token type
+     * @param requestHeader all http request headers
+     * @param annotationInfo the annotation info
+     * @throws JwtValidationException if token type for annotation not valid, i.e. @Secure(NOT_VALID)
      */
     public void validateTokenType(String tokentype,
                                   Http.RequestHeader requestHeader,
-                                  AnnotationInfo filterAnnotationInfo) throws JwtValidationException {
+                                  AnnotationInfo annotationInfo) throws JwtValidationException {
         String className = Preconditions.checkNotNull(requestHeader.tags().get(Router.Tags.ROUTE_CONTROLLER));
         String methodName = Preconditions.checkNotNull(requestHeader.tags().get(Router.Tags.ROUTE_ACTION_METHOD));
         Optional<Token.Type[]> tokens =
                 JwtAnnotationHelper.findTokenTypesForSecureAnnotation(
-                        filterAnnotationInfo.getSecure(), className, methodName);
+                        annotationInfo.getSecure(), className, methodName);
 
         if (tokens.isPresent()) {
             for (Token.Type t : tokens.get()) {

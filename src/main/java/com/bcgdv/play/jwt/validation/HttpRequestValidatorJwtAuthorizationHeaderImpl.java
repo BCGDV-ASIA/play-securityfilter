@@ -104,7 +104,7 @@ public class HttpRequestValidatorJwtAuthorizationHeaderImpl implements HttpReque
      * Validate request by looking for and validating contents of JWT token.
      *
      * @param requestHeader The current http request header
-     * @return
+     * @return empty String for success or error message included.
      */
     @Override
     public Optional<String> validate(Http.RequestHeader requestHeader) {
@@ -158,7 +158,7 @@ public class HttpRequestValidatorJwtAuthorizationHeaderImpl implements HttpReque
     /**
      * Lazy loading of reflections at runtime, to circumvent the Guice classloader problem.
      *
-     * @return
+     * @return the reflections
      */
     public Reflections getReflections() {
         if (this.reflections == null) {

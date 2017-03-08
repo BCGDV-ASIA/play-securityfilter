@@ -53,8 +53,8 @@ public class JwtValidationPlayAction extends Action<Secure> {
      * This executes the action method after validating the customerID from the Token was in the request
      * path, queryString or body. Uses heuristics to determine what's a customerID.
      *
-     * @param context
-     * @return
+     * @param context the http context needed for execution
+     * @return a result wrapped in CompletionStage
      */
     @Override
     public CompletionStage<Result> call(Http.Context context) {

@@ -82,7 +82,7 @@ public class JSONResponseHelper {
 
     /**
      * 403 forbidden
-     * * @return as JSON Play Result
+     * @return as JSON Play Result
      */
     public static Result forbiddenAsJSON() {
         return resultAsJSON("403");

@@ -39,10 +39,10 @@ public abstract class JwtSignatureValidationService {
 
 
     /**
-     * Fetch a public key from remote service if it's not in cache.
+     * Fetch a public key and do so from remote service if it's not in local cache.
      *
-     * @param context
-     * @return
+     * @param context the token's context is the cache key
+     * @return the key value.
      */
     protected String fetchCachedPublicKey(String context) {
         String serverPubkey = publicKeyCache.getKey(context);
@@ -89,7 +89,7 @@ public abstract class JwtSignatureValidationService {
      *
      * @param token   the token
      * @param context the verification key
-     * @throws JwtValidationException
+     * @throws JwtValidationException if signature cannot be validated
      */
     public void checkSignatureInContext(String token, String context) throws JwtValidationException {
         String serverPubkey = null;
