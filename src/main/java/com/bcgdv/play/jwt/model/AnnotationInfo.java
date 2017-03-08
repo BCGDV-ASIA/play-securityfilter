@@ -80,7 +80,7 @@ public final class AnnotationInfo implements Serializable {
         /**
          * Get the anonymous tagged classes.
          *
-         * @return @Set of classes
+         * @return a Set of classes
          */
         public Set<Class<?>> getAnonymousClasses() {
             return anonymousClasses;
@@ -89,7 +89,7 @@ public final class AnnotationInfo implements Serializable {
         /**
          * get the anonymous tagged methods
          *
-         * @return @Set of methods
+         * @return a Set of methods
          */
         public Set<Method> getAnonymousMethods() {
             return anonymousMethods;
