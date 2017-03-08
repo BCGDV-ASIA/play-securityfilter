@@ -24,7 +24,8 @@ import java.util.Collection;
 import java.util.Optional;
 
 /**
- * Validates incoming HTTP requests for JWT Tokens
+ * Validates incoming HTTP requests for JWT Tokens. Note this class lazy loads and initializes
+ * dependencies that Guice cannot deliver because of a bug.
  */
 @Singleton
 public class HttpRequestValidatorJwtAuthorizationHeaderImpl implements HttpRequestValidator {
