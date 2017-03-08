@@ -66,9 +66,9 @@ public abstract class JwtSignatureValidationService {
 
 
     /**
-     * Build the
+     * Build the key path
      *
-     * @param context
+     * @param context the context
      * @return the relative path
      */
     protected String buildKeyPath(String context) {
