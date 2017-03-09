@@ -40,7 +40,7 @@ public class JwtIntegrityValidationService {
     protected JwtIntegrityValidationService hasAuthHeader(Http.RequestHeader requestHeader) throws JwtValidationException {
         logger.debug("Validating Authorization Header for given request {}", requestHeader.uri());
         if (JwtUtil.getAuthorizationHeaderContents(requestHeader.headers()).isEmpty()) {
-            throw new JwtValidationException();
+            throw new JwtValidationException("unable to locate HTTP Authorization header");
         }
         return this;
     }
@@ -57,7 +57,7 @@ public class JwtIntegrityValidationService {
         logger.debug("Validating jwt length for given request {}", requestHeader.uri());
         String jwt = JwtUtil.getAuthorizationHeaderContents(requestHeader.headers());
         if (jwt.split("\\.").length != Token.LENGTH) {
-            throw new JwtValidationException();
+            throw new JwtValidationException("JWT token not made up of three required components, header, payload, signature");
         }
         return this;
     }
@@ -76,7 +76,7 @@ public class JwtIntegrityValidationService {
                 jsonNode.findPath(Token.Fields.expiryInMilliSeconds.toString()).asLong();
         Long createdTime = JwtUtil.getDateCreated(jsonNode);
         if (isExpired(createdTime, expiryTimeInMilliSeconds)) {
-            throw new JwtValidationException();
+            throw new JwtValidationException("JWT token is expired");
         }
     }
 
