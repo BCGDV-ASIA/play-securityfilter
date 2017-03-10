@@ -145,7 +145,7 @@ public class JwtAnnotationHelper {
         for (Class<?> clazz : secureAnnotationInfo.getSecureClasses()) {
             if (clazz.getName().equals(className)) {
                 com.bcgdv.play.jwt.Secure secure = clazz.getDeclaredAnnotation(com.bcgdv.play.jwt.Secure.class);
-                return secure.value();
+                return secure.type();
             }
         }
         throw new IllegalArgumentException("Cannot find token for given class " + className);
@@ -163,7 +163,7 @@ public class JwtAnnotationHelper {
         for (Method method : secureAnnotationInfo.getSecureMethods()) {
             if (method.getDeclaringClass().getName().equals(className) && method.getName().equals(methodName)) {
                 com.bcgdv.play.jwt.Secure secure = method.getDeclaredAnnotation(com.bcgdv.play.jwt.Secure.class);
-                return secure.value();
+                return secure.type();
             }
         }
         throw new IllegalArgumentException("Cannot find token for given class " + className + " method " + methodName);

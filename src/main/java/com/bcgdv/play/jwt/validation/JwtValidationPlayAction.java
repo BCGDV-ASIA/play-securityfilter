@@ -3,7 +3,6 @@ package com.bcgdv.play.jwt.validation;
 import com.bcgdv.jwt.models.Token;
 import com.bcgdv.play.jwt.Secure;
 import com.bcgdv.play.jwt.util.JSONResponseHelper;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,8 +59,8 @@ public class JwtValidationPlayAction extends Action<Secure> {
      */
     @Override
     public CompletionStage<Result> call(Http.Context context) {
-        logger.debug(EXECUTING_ACTION, Arrays.toString(configuration.value()), context.request().uri());
-        Token.Type[] annotatedTokens = configuration.value();
+        logger.debug(EXECUTING_ACTION, Arrays.toString(configuration.type()), context.request().uri());
+        Token.Type[] annotatedTokens = configuration.type();
 
         try {
             String tokenType = jwtPayloadValidationService.extractTokenType(context.request().headers());

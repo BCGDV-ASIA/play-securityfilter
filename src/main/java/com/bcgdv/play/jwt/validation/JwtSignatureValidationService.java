@@ -42,7 +42,7 @@ public abstract class JwtSignatureValidationService {
      * Fetch a public key and do so from remote service if it's not in local cache.
      *
      * @param context the token's context is the cache key
-     * @return the key value.
+     * @return the key type.
      */
     protected String fetchCachedPublicKey(String context) {
         String serverPubkey = publicKeyCache.getKey(context);

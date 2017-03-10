@@ -23,5 +23,5 @@ public @interface Secure {
      *
      * @return as Token.Type[]
      */
-    Token.Type[] value() default {Token.Type.NONE};
+    Token.Type[] type() default {Token.Type.NONE};
 }
