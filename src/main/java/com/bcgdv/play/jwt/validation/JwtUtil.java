@@ -87,7 +87,7 @@ public final class JwtUtil {
      * Extract the JWT token payload as String
      *
      * @param token the token
-     * @return the payload
+     * @return the payload as String
      */
     public static String extractJwtPayload(String token) {
         Preconditions.checkArgument(
@@ -95,6 +95,16 @@ public final class JwtUtil {
                 "Invalid Jwt token , Jwt token should have header,claims and signature");
         String payload = token.split("\\.")[1];
         return new String(Base64.getDecoder().decode(payload));
+    }
+
+    /**
+     * Extract the JWT token payload as Json Node
+     *
+     * @param token the token
+     * @return the payload as Json node
+     */
+    public static JsonNode extractJwtPayloadAsJson(String token) {
+        return Json.parse(extractJwtPayload(token));
     }
 
 

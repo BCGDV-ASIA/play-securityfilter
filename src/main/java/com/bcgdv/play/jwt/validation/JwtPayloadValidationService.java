@@ -23,6 +23,8 @@ import play.routing.Router;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.bcgdv.play.jwt.validation.JwtUtil.*;
+
 /**
  * Extract JWT Token payload for verification
  */
@@ -85,15 +87,20 @@ public class JwtPayloadValidationService {
      * @return the token type as String
      * @throws JwtValidationException if token type cannot be established
      */
-    public String extractTokenType(Map<String, String[]> headers) throws JwtValidationException {
+    public Token.Type extractTokenType(Map<String, String[]> headers) throws JwtValidationException {
         String token =
-                JwtUtil.getAuthorizationHeaderContents(headers);
+                getAuthorizationHeaderContents(headers);
         JsonNode payloadNode =
-                JwtUtil.extractAndDecryptSecret(
-                        simpleCipher, Json.parse(
-                                JwtUtil.extractJwtPayload(token)));
-
-        return payloadNode.findPath(Token.Fields.tokenType.toString()).asText();
+                extractAndDecryptSecret(
+                        simpleCipher,
+                        extractJwtPayloadAsJson(token));
+        try {
+            return Token.Type.valueOf(
+                    payloadNode.findPath(
+                            Token.Fields.tokenType.toString()).asText());
+        } catch (Exception e) {
+            return Token.Type.NONE;
+        }
     }
 
     /**
@@ -104,11 +111,10 @@ public class JwtPayloadValidationService {
      * @throws JwtValidationException if token type cannot be established
      */
     public Map extractAssertions(Map<String, String[]> headers) throws JwtValidationException {
-        JsonNode secret = JwtUtil.extractAndDecryptSecret(
+        JsonNode secret = extractAndDecryptSecret(
                         simpleCipher,
-                        Json.parse(
-                                JwtUtil.extractJwtPayload(
-                                        JwtUtil.getAuthorizationHeaderContents(headers))));
+                        extractJwtPayloadAsJson(
+                                getAuthorizationHeaderContents(headers)));
         return new ObjectMapper().convertValue(
                 secret.findPath(Token.Fields.assertions.toString()),
                 Map.class);
@@ -123,10 +129,10 @@ public class JwtPayloadValidationService {
      */
     public void validateJwtPayload(Http.RequestHeader requestHeader,
                                    AnnotationInfo annotationInfo) throws JwtValidationException {
-        String token = JwtUtil.getAuthorizationHeaderContents(requestHeader.headers());
-        JsonNode payloadNode = JwtUtil.extractAndDecryptSecret(
+        String token = getAuthorizationHeaderContents(requestHeader.headers());
+        JsonNode payloadNode = extractAndDecryptSecret(
                 simpleCipher,
-                Json.parse(JwtUtil.extractJwtPayload(token)));
+                extractJwtPayloadAsJson(token));
         String tokenType = payloadNode.findPath(Token.Fields.tokenType.toString()).asText();
         if (StringUtils.isBlank(tokenType)) {
             throw new JwtValidationException("token type not specified");

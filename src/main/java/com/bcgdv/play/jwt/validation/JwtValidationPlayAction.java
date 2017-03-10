@@ -51,8 +51,7 @@ public class JwtValidationPlayAction extends Action<Secure> {
 
 
     /**
-     * This executes the action method after validating the customerID from the Token was in the request
-     * path, queryString or body. Uses heuristics to determine what's a customerID.
+     * Validation of token as controller action. Use to perform, i.e. authorization
      *
      * @param context the http context needed for execution
      * @return a result wrapped in CompletionStage
@@ -60,13 +59,10 @@ public class JwtValidationPlayAction extends Action<Secure> {
     @Override
     public CompletionStage<Result> call(Http.Context context) {
         logger.debug(EXECUTING_ACTION, Arrays.toString(configuration.type()), context.request().uri());
-        Token.Type[] annotatedTokens = configuration.type();
-
         try {
-            String tokenType = jwtPayloadValidationService.extractTokenType(context.request().headers());
-            Map assertions = jwtPayloadValidationService.extractAssertions(context.request().headers());
-
-            System.out.println(assertions);
+            Token.Type[] annotatedTokens = configuration.type();
+            Token.Type requestToken = jwtPayloadValidationService.extractTokenType(context.request().headers());
+            Map requestAssertions = jwtPayloadValidationService.extractAssertions(context.request().headers());
 
         } catch (JwtValidationException e) {
             logger.warn("JWT Validation Exception, cause: " + e.getMessage());
