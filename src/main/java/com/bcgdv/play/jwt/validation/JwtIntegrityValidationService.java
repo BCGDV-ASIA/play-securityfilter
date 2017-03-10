@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
 import play.libs.Json;
 import play.mvc.Http;
 
+import static com.bcgdv.play.jwt.validation.JwtUtil.extractJwtPayloadAsJson;
+import static com.bcgdv.play.jwt.validation.JwtUtil.getAuthorizationHeaderContents;
+
 /**
  * Validates JWT Token integrity, not specific to TokenType
  */
@@ -39,7 +42,7 @@ public class JwtIntegrityValidationService {
      */
     protected JwtIntegrityValidationService hasAuthHeader(Http.RequestHeader requestHeader) throws JwtValidationException {
         logger.debug("Validating Authorization Header for given request {}", requestHeader.uri());
-        if (JwtUtil.getAuthorizationHeaderContents(requestHeader.headers()).isEmpty()) {
+        if (getAuthorizationHeaderContents(requestHeader.headers()).isEmpty()) {
             throw new JwtValidationException("unable to locate HTTP Authorization header");
         }
         return this;
@@ -55,7 +58,7 @@ public class JwtIntegrityValidationService {
      */
     protected JwtIntegrityValidationService andHasJWTToken(Http.RequestHeader requestHeader) throws JwtValidationException {
         logger.debug("Validating jwt length for given request {}", requestHeader.uri());
-        String jwt = JwtUtil.getAuthorizationHeaderContents(requestHeader.headers());
+        String jwt = getAuthorizationHeaderContents(requestHeader.headers());
         if (jwt.split("\\.").length != Token.LENGTH) {
             throw new JwtValidationException("JWT token not made up of three required components, header, payload, signature");
         }
@@ -69,9 +72,11 @@ public class JwtIntegrityValidationService {
      * @throws JwtValidationException if the token is expired
      */
     protected void thatIsNotExpired(Http.RequestHeader requestHeader) throws JwtValidationException {
-        String payload = JwtUtil.extractJwtPayload(JwtUtil.
-                getAuthorizationHeaderContents(requestHeader.headers()));
-        JsonNode jsonNode = Json.parse(payload);
+        JsonNode jsonNode =
+                extractJwtPayloadAsJson(
+                    getAuthorizationHeaderContents(
+                            requestHeader.headers()));
+
         Long expiryTimeInMilliSeconds =
                 jsonNode.findPath(Token.Fields.expiryInMilliSeconds.toString()).asLong();
         Long createdTime = JwtUtil.getDateCreated(jsonNode);
