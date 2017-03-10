@@ -6,6 +6,7 @@ import com.bcgdv.play.jwt.util.JwtAnnotationHelper;
 import com.bcgdv.play.jwt.util.PublicKeyCache;
 import com.bcgdv.play.services.Api;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -102,12 +103,15 @@ public class JwtPayloadValidationService {
      * @return the token type as String
      * @throws JwtValidationException if token type cannot be established
      */
-    public JsonNode extractAssertions(Map<String, String[]> headers) throws JwtValidationException {
-        return JwtUtil.extractAndDecryptSecret(
+    public Map extractAssertions(Map<String, String[]> headers) throws JwtValidationException {
+        JsonNode secret = JwtUtil.extractAndDecryptSecret(
                         simpleCipher,
                         Json.parse(
                                 JwtUtil.extractJwtPayload(
                                         JwtUtil.getAuthorizationHeaderContents(headers))));
+        return new ObjectMapper().convertValue(
+                secret.findPath(Token.Fields.assertions.toString()),
+                Map.class);
     }
 
     /**

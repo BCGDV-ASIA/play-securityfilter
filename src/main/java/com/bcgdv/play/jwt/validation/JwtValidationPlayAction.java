@@ -12,6 +12,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -64,7 +65,7 @@ public class JwtValidationPlayAction extends Action<Secure> {
 
         try {
             String tokenType = jwtPayloadValidationService.extractTokenType(context.request().headers());
-            JsonNode assertions = jwtPayloadValidationService.extractAssertions(context.request().headers());
+            Map assertions = jwtPayloadValidationService.extractAssertions(context.request().headers());
 
             System.out.println(assertions);
 
