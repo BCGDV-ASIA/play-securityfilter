@@ -3,6 +3,7 @@ package com.bcgdv.play.jwt.validation;
 import com.bcgdv.jwt.models.Token;
 import com.bcgdv.play.jwt.Secure;
 import com.bcgdv.play.jwt.util.JSONResponseHelper;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,9 +63,11 @@ public class JwtValidationPlayAction extends Action<Secure> {
         Token.Type[] annotatedTokens = configuration.value();
 
         try {
-            String tokenType = extractTokenType(context);
+            String tokenType = jwtPayloadValidationService.extractTokenType(context.request().headers());
+            JsonNode assertions = jwtPayloadValidationService.extractAssertions(context.request().headers());
 
-            //
+            System.out.println(assertions);
+
         } catch (JwtValidationException e) {
             logger.warn("JWT Validation Exception, cause: " + e.getMessage());
             try {
@@ -78,17 +81,5 @@ public class JwtValidationPlayAction extends Action<Secure> {
 
         }
         return delegate.call(context);
-    }
-
-
-    /**
-     * Get token type
-     *
-     * @param context the http context with request / headers
-     * @return the token type of the embedded token.
-     * @throws JwtValidationException if something goes wrong during extraction
-     */
-    protected String extractTokenType(Http.Context context) throws JwtValidationException {
-        return jwtPayloadValidationService.extractTokenType(context.request().headers());
     }
 }

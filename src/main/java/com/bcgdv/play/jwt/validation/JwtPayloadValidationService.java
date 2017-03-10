@@ -96,7 +96,22 @@ public class JwtPayloadValidationService {
     }
 
     /**
-     * Extract tokentype and payloadsignature, validate both
+     * Extract assertions
+     *
+     * @param headers headers from HTTP request
+     * @return the token type as String
+     * @throws JwtValidationException if token type cannot be established
+     */
+    public JsonNode extractAssertions(Map<String, String[]> headers) throws JwtValidationException {
+        return JwtUtil.extractAndDecryptSecret(
+                        simpleCipher,
+                        Json.parse(
+                                JwtUtil.extractJwtPayload(
+                                        JwtUtil.getAuthorizationHeaderContents(headers))));
+    }
+
+    /**
+     * Get tokentype and payloadsignature, validate both
      *
      * @param requestHeader  the request header
      * @param annotationInfo the annotation info
