@@ -6,6 +6,7 @@ package com.bcgdv.play.jwt.validation;
 import com.bcgdv.jwt.models.Token;
 import play.mvc.Http;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +23,8 @@ public class AssertionValidatorImpl implements AssertionValidator {
      */
     protected List<AssertionValidation> assertionValidations;
 
-
     /**
-     * Default implementation, has no AssertionValidations.
+     * Default
      */
     public AssertionValidatorImpl() {
         this.assertionValidations = new ArrayList<>();
@@ -34,9 +34,12 @@ public class AssertionValidatorImpl implements AssertionValidator {
      * Create with single validator
      * @param assertionValidation the assertion validation
      */
+    @Inject
     public AssertionValidatorImpl(AssertionValidation assertionValidation) {
         this.assertionValidations = new ArrayList<>();
-        this.assertionValidations.add(assertionValidation);
+        if(assertionValidation!=null) {
+            this.assertionValidations.add(assertionValidation);
+        }
     }
 
     /**
@@ -44,7 +47,11 @@ public class AssertionValidatorImpl implements AssertionValidator {
      * @param assertionValidations the validations
      */
     public AssertionValidatorImpl(List<AssertionValidation> assertionValidations) {
-        this.assertionValidations = assertionValidations;
+        if (assertionValidations!=null) {
+            this.assertionValidations = assertionValidations;
+        } else {
+            this.assertionValidations = new ArrayList<>();
+        }
     }
 
     /**

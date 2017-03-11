@@ -24,6 +24,7 @@ public class AnnotationInfoProvider implements Provider<AnnotationInfo> {
     /**
      * Called by Guide. Pass in Reflections that point at Play classloader for controllers
      * @param reflections the Reflections
+     * @param environment the environment
      */
     @Inject
     public AnnotationInfoProvider(Reflections reflections, Environment environment) {

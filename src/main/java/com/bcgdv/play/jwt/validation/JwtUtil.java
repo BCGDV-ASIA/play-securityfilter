@@ -33,8 +33,8 @@ public final class JwtUtil {
     /**
      * Find creation time of encoded JWT Token
      *
-     * @param encodedToken
-     * @return
+     * @param encodedToken the encoded token
+     * @return the creation date as long millis
      */
     public static Long getDateCreated(String encodedToken) {
         return getDateCreated(
@@ -47,8 +47,8 @@ public final class JwtUtil {
     /**
      * Find created time in JsonNode object
      *
-     * @param jsonNode
-     * @return
+     * @param jsonNode the json node
+     * @return the creation date as long millis
      */
     public static Long getDateCreated(JsonNode jsonNode) {
         return jsonNode.findPath(Token.Fields.dateCreated.toString()).asLong();
@@ -58,8 +58,8 @@ public final class JwtUtil {
     /**
      * When was the Authorization Header created?
      *
-     * @param requestHeader
-     * @return
+     * @param requestHeader the request headers
+     * @return the creation date a long millis
      */
     public static Long getDateCreated(Http.RequestHeader requestHeader) {
         return getDateCreated(
@@ -71,8 +71,8 @@ public final class JwtUtil {
     /**
      * Extract the Authorization header from headers array
      *
-     * @param headers
-     * @return
+     * @param headers the http headers
+     * @return the Authorization header contents as String.
      */
     public static String getAuthorizationHeaderContents(Map<String, String[]> headers) {
         try {
@@ -129,9 +129,9 @@ public final class JwtUtil {
      * Decrypts the token's secret and attempts to parse it as a JSON node.
      *
      * @param simpleCipher passed in cipher. Note this is the same as the cipher used to create the token.
-     * @param jsonNode
+     * @param jsonNode the jsonNode
      * @return decrypted secret as JSON node.
-     * @throws JwtValidationException
+     * @throws JwtValidationException if secret cannot be extracted or decrypted
      */
     public static JsonNode extractAndDecryptSecret(SimpleCipher simpleCipher, JsonNode jsonNode) throws JwtValidationException {
         try {
