@@ -24,13 +24,6 @@ public class AssertionValidatorImpl implements AssertionValidator {
     protected List<AssertionValidation> assertionValidations;
 
     /**
-     * Default
-     */
-    public AssertionValidatorImpl() {
-        this.assertionValidations = new ArrayList<>();
-    }
-
-    /**
      * Create with single validator
      * @param assertionValidation the assertion validation
      */

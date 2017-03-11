@@ -59,5 +59,9 @@ public class SecurityModule extends AbstractModule {
         // Points to default implementation
         bind(HttpRequestValidator.class)
                 .to(HttpRequestValidatorJwtAuthorizationHeaderImpl.class);
+
+        // Points to default.
+        bind(AssertionValidator.class)
+                .to(AssertionValidatorImpl.class);
     }
 }
