@@ -25,15 +25,6 @@ public class JwtValidationPlayAction extends Action<Secure> {
      */
     protected AssertionValidator assertionValidator;
 
-
-    /**
-     * Build with Assertionvalidator
-     * @param assertionValidator the assertion validator
-     */
-    public JwtValidationPlayAction(AssertionValidator assertionValidator) {
-        this.assertionValidator=assertionValidator;
-    }
-
     /**
      * Logger
      */
@@ -58,8 +49,10 @@ public class JwtValidationPlayAction extends Action<Secure> {
      * @param jwtPayloadValidationService the payload validation service
      */
     @Inject
-    public JwtValidationPlayAction(JwtPayloadValidationService jwtPayloadValidationService) {
+    public JwtValidationPlayAction(JwtPayloadValidationService jwtPayloadValidationService,
+                                   AssertionValidator assertionValidator) {
         this.jwtPayloadValidationService = jwtPayloadValidationService;
+        this.assertionValidator=assertionValidator;
     }
 
 
