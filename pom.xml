@@ -4,7 +4,7 @@
     <groupId>com.bcgdv.jwt</groupId>
     <artifactId>play-securityfilter</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <name>play-securityfilter</name>
     <url>http://maven.apache.org</url>
     <dependencies>
