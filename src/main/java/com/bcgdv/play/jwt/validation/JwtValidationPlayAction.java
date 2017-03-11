@@ -71,10 +71,10 @@ public class JwtValidationPlayAction extends Action<Secure> {
      */
     @Override
     public CompletionStage<Result> call(Http.Context context) {
-        logger.debug(EXECUTING_ACTION, Arrays.toString(configuration.type()), uri(context));
+        logger.debug(EXECUTING_ACTION, Arrays.toString(configuration.value()), uri(context));
         try {
             if(!assertionValidator.validate(
-                    configuration.type(),
+                    configuration.value(),
                     requestTokenType(context),
                     requestAssertions(context),
                     context.request())) {
