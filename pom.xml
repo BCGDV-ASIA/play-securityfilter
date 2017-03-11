@@ -5,6 +5,7 @@
     <artifactId>play-securityfilter</artifactId>
     <packaging>jar</packaging>
     <version>1.0</version>
+    <description>a play security filter that validates JWT tokens with encrypted payload</description>
     <name>play-securityfilter</name>
     <url>http://maven.apache.org</url>
     <dependencies>
