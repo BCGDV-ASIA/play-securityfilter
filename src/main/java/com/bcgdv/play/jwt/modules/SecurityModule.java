@@ -10,6 +10,8 @@ import com.bcgdv.jwt.providers.SymmetricCipherProvider;
 import com.bcgdv.jwt.providers.TokenExpiryInfoProvider;
 import com.bcgdv.jwt.services.TokenGenerationService;
 import com.bcgdv.jwt.services.TokenGenerationServiceImpl;
+import com.bcgdv.play.jwt.validation.AssertionValidator;
+import com.bcgdv.play.jwt.validation.AssertionValidatorImpl;
 import com.bcgdv.play.jwt.validation.HttpRequestValidator;
 import com.bcgdv.play.jwt.validation.HttpRequestValidatorJwtAuthorizationHeaderImpl;
 import com.bcgdv.play.services.Api;
@@ -26,7 +28,7 @@ import com.simonmittag.cryptoutils.symmetric.SimpleSymmetricCipher;
 public class SecurityModule extends AbstractModule {
 
     /**
-     * Configure the Security modules
+     * Configure the Security module
      */
     @Override
     public void configure() {
@@ -57,5 +59,9 @@ public class SecurityModule extends AbstractModule {
         // Points to default implementation
         bind(HttpRequestValidator.class)
                 .to(HttpRequestValidatorJwtAuthorizationHeaderImpl.class);
+
+        // Points to default impl.
+        bind(AssertionValidator.class)
+                .to(AssertionValidatorImpl.class);
     }
 }

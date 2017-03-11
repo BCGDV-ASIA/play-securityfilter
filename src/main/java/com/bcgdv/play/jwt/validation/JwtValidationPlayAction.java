@@ -20,6 +20,19 @@ import java.util.concurrent.CompletionStage;
  */
 public class JwtValidationPlayAction extends Action<Secure> {
 
+    /**
+     * Has an assertionValidator to delegate to.
+     */
+    protected AssertionValidator assertionValidator;
+
+
+    /**
+     * Build with Assertionvalidator
+     * @param assertionValidator the assertion validator
+     */
+    public JwtValidationPlayAction(AssertionValidator assertionValidator) {
+        this.assertionValidator=assertionValidator;
+    }
 
     /**
      * Logger
@@ -58,24 +71,71 @@ public class JwtValidationPlayAction extends Action<Secure> {
      */
     @Override
     public CompletionStage<Result> call(Http.Context context) {
-        logger.debug(EXECUTING_ACTION, Arrays.toString(configuration.type()), context.request().uri());
+        logger.debug(EXECUTING_ACTION, Arrays.toString(configuration.type()), uri(context));
         try {
-            Token.Type[] annotatedTokens = configuration.type();
-            Token.Type requestToken = jwtPayloadValidationService.extractTokenType(context.request().headers());
-            Map requestAssertions = jwtPayloadValidationService.extractAssertions(context.request().headers());
-
+            if(!assertionValidator.validate(
+                    configuration.type(),
+                    requestTokenType(context),
+                    requestAssertions(context),
+                    context.request())) {
+                return forbiddenAsFuture();
+            }
         } catch (JwtValidationException e) {
             logger.warn("JWT Validation Exception, cause: " + e.getMessage());
             try {
-                return CompletableFuture.completedFuture(JSONResponseHelper.forbiddenAsJSON());
+                return forbiddenAsFuture();
             } catch (Exception e1) {
                 throw new RuntimeException("unable to process request, cause: " + e.getMessage());
             }
         } catch (Exception e) {
             logger.error("i got an error while decrypting an already validated token, this should never happen" + e.getMessage());
-            return CompletableFuture.completedFuture(JSONResponseHelper.forbiddenAsJSON());
+            return forbiddenAsFuture();
 
         }
         return delegate.call(context);
+    }
+
+    /**
+     * Canned forbidden response as Completeable Future
+     * @return the 403 as JSON, wrapped in future.
+     */
+    protected CompletableFuture<Result> forbiddenAsFuture() {
+        return CompletableFuture.completedFuture(JSONResponseHelper.forbiddenAsJSON());
+    }
+
+    /**
+     * Get JWT assertions from request
+     * @param context http context
+     * @return extracted assertions
+     */
+    protected Map requestAssertions(Http.Context context) {
+        return jwtPayloadValidationService.extractAssertions(headers(context));
+    }
+
+    /**
+     * Get token type from request
+     * @param context the http context
+     * @return the token type
+     */
+    protected Token.Type requestTokenType(Http.Context context) {
+        return jwtPayloadValidationService.extractTokenType(headers(context));
+    }
+
+    /**
+     * Get uri from request
+     * @param context the http context
+     * @return the uri as String
+     */
+    protected String uri(Http.Context context) {
+        return context.request().uri();
+    }
+
+    /**
+     * Get headers from request
+     * @param context the http context
+     * @return the headers as Map
+     */
+    protected Map<String, String[]> headers(Http.Context context) {
+        return context.request().headers();
     }
 }
